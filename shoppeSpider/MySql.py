@@ -19,7 +19,7 @@ class MySql(object):
                   item['shopid'],
                   item['price'], item['price_max'],
                   item['liked_count'], item['price_min'], item['discount'], item['sold'], item['name'], item['description'],
-                  item['attributes'], item['tier_variations'], item['categories_name'],
+                  str(item['attributes']), str(item['tier_variations']), item['categories_name'],
                   item['rating_star'],  item['rating_count'], item['catid'], item['categories'], item['ctime'], item['image'])
         try:
             self.cursor.execute(sql, values)
@@ -29,13 +29,13 @@ class MySql(object):
             raise
 
     def select_item_db(self):
-        sql = "SELECT itemid FROM product"
+        sql = "SELECT itemid FROM shoppe_sg"
         self.cursor.execute(sql)
         result = self.cursor.fetchall()
         return result
 
     def select_num_db(self):
-        sql = "SELECT COUNT(id) FROM product"
+        sql = "SELECT COUNT(id) FROM shoppe_sg"
         self.cursor.execute(sql)
         result = self.cursor.fetchone()
         return result

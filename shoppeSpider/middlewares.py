@@ -7,6 +7,9 @@ from scrapy import signals
 
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
+from scrapy.exceptions import IgnoreRequest
+
+from shoppeSpider.MyRedis import MyRedis
 
 
 class ShoppespiderSpiderMiddleware:
@@ -61,6 +64,7 @@ class ShoppespiderDownloaderMiddleware:
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
 
+    my_redis = MyRedis()
     @classmethod
     def from_crawler(cls, crawler):
         # This method is used by Scrapy to create your spiders.
@@ -78,7 +82,14 @@ class ShoppespiderDownloaderMiddleware:
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        return None
+
+        metas = request.meta
+        if 'itemid' in metas:
+            if self.my_redis.is_exit():
+                return None
+            else:
+                raise IgnoreRequest("IgnoreRequest : %s" % request.url)
+
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.

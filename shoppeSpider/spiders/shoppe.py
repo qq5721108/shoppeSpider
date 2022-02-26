@@ -24,7 +24,7 @@ class ShoppeSpider(scrapy.Spider):
 
     def parse_subcategory(self, child_category_list):
         for data in child_category_list:
-            url = self.search_items + "&newest=1&order=desc&match_id={}".format(data['catid'])
+            url = self.search_items + "&newest=0&order=desc&match_id={}".format(data['catid'])
             yield scrapy.Request(url, callback=self.parse_search, meta={'catid': data['catid'], 'newest':0})
 
     def parse_search(self, response):
@@ -38,7 +38,7 @@ class ShoppeSpider(scrapy.Spider):
             url = self.get_url + "itemid={}&shopid={}".format(data['itemid'], data['shopid'])
             yield scrapy.Request(url, callback=self.parse_items, meta={'itemid': data['itemid']})
         next_page_url = self.search_items + "&newest={}&match_id={}".format(newest+60, cat_id)
-        yield scrapy.Request(url, callback=self.parse_search, meta={'catid': cat_id, 'newest': newest + 60})
+        yield scrapy.Request(next_page_url, callback=self.parse_search, meta={'catid': cat_id, 'newest': newest + 60})
 
     def parse_items(self, response):
         item_data = json.loads(response.body, encoding='utf-8')['data']
@@ -60,6 +60,7 @@ class ShoppeSpider(scrapy.Spider):
         item['rating_star'] = item_data['item_rating']['rating_star']
         item['rating_count'] = ','.join(map(str, item_data['item_rating']['rating_count']))
         item['catid'] = item_data['catid']
+        item['name'] = item_data['name']
         categories = []
         categories_name = []
         for catId in item_data['categories']:
@@ -69,5 +70,9 @@ class ShoppeSpider(scrapy.Spider):
         item['categories_name'] = ','.join(map(str, categories_name))
         item['ctime'] = item_data['ctime']
         item['sold'] = item_data['sold']
+        item['discount'] = item_data['discount']
+        item['description'] = item_data['description']
+        item['attributes'] = item_data['attributes']
+        item['tier_variations'] = item_data['tier_variations']
         item['image'] = item_data['image']
         yield item
