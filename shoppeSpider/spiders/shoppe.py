@@ -20,7 +20,7 @@ class ShoppeSpider(scrapy.Spider):
     def parse(self, response):
         parent_category_list = json.loads(response.body)['data']['category_list']
         for data in parent_category_list:
-            return self.parse_subcategory(data['children'])
+            yield from self.parse_subcategory(data['children'])
 
     def parse_subcategory(self, child_category_list):
         for data in child_category_list:

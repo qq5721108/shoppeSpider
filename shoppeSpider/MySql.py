@@ -5,7 +5,7 @@ from shoppeSpider import settings
 
 class MySql(object):
 
-    db = pymysql.connect(host="101.35.132.138", user=settings.DB_USERNAME, password=settings.DB_PASSWORD, database=settings.DB_NAME, charset='utf8')
+    db = pymysql.connect(host="101.35.132.138", user=settings.DB_USERNAME, password=settings.DB_PASSWORD, database=settings.DB_NAME)
     cursor = db.cursor()
 
     def __init__(self):

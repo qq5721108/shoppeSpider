@@ -85,7 +85,7 @@ class ShoppespiderDownloaderMiddleware:
 
         metas = request.meta
         if 'itemid' in metas:
-            if self.my_redis.is_exit():
+            if self.my_redis.is_exit(metas['itemid']):
                 return None
             else:
                 raise IgnoreRequest("IgnoreRequest : %s" % request.url)
